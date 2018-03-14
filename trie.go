@@ -2,6 +2,7 @@ package trie
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 )
 
@@ -66,7 +67,7 @@ func (b *branch) Regexp() string {
 	if b.text == nil {
 		return ""
 	}
-	s := replacer.Replace(string(b.text))
+	s := regexp.QuoteMeta(string(b.text))
 	if b.fork != nil {
 		return s + b.fork.Regexp()
 	}
@@ -106,20 +107,3 @@ func (f fork) Regexp() string {
 }
 
 var termination rune
-
-var replacer = strings.NewReplacer(
-	`\`, `\\`,
-	`*`, `\*`,
-	`+`, `\+`,
-	`.`, `\.`,
-	`?`, `\?`,
-	`{`, `\{`,
-	`}`, `\}`,
-	`(`, `\(`,
-	`)`, `\)`,
-	`[`, `\[`,
-	`]`, `\]`,
-	`^`, `\^`,
-	`$`, `\$`,
-	`|`, `\|`,
-)
