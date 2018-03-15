@@ -105,6 +105,7 @@ func (f fork) Regexp() string {
 	for _, b := range f {
 		childs = append(childs, b.Regexp())
 	}
+	sort.Slice(childs, func(i, j int) bool { return childs[i] < childs[j] })
 	return fmt.Sprintf("(%s)", strings.Join(childs, "|"))
 }
 
