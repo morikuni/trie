@@ -3,6 +3,7 @@ package trie
 import (
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 )
 
@@ -44,22 +45,23 @@ func (b *branch) Add(text []rune) {
 	newSuffix := text[i:]
 	b.text = commonPrefix
 
-	if l > lt {
-		if b.fork == nil {
-			b.fork = newFork()
-		}
-		b.fork.Add(oldSuffix)
-	} else {
-		if len(oldSuffix) != 0 {
-			b.fork = newFork()
-			b.fork.Add(oldSuffix)
-			b.fork[oldSuffix[0]].fork = oldFork
-		} else if b.fork == nil {
-			b.fork = newFork()
+	if i == l && i == lt && b.fork == nil {
+		return
+	}
+
+	if len(oldSuffix) != 0 {
+		forked := newBranch(oldSuffix, oldFork)
+		b.fork = newFork()
+		b.fork[forked.text[0]] = forked
+	}
+	if b.fork == nil {
+		b.fork = newFork()
+		if len(oldSuffix) == 0 {
 			b.fork.Add(oldSuffix)
 		}
 	}
 	b.fork.Add(newSuffix)
+
 	return
 }
 
